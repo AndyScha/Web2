@@ -5,19 +5,19 @@ import dotenv from "dotenv";
 import { connectDatabase } from "./config/database";
 import { errorHandler } from "./middleware/errorHandler";
 import { notFound } from "./middleware/notFound";
-import studentsRouter from "./routes/students";
+import publicUsersRouter from "./routes/publicUsers";
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 80;
 
 // Middleware
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    origin: process.env.CORS_ORIGIN || "http://localhost:80",
     credentials: true,
   })
 );
@@ -42,7 +42,7 @@ app.get("/health", (req, res) => {
 });
 
 // API Routes
-app.use("/api/students", studentsRouter);
+app.use("/publicUsers", publicUsersRouter);
 
 // Error handling middleware
 app.use(notFound);

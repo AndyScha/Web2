@@ -44,14 +44,14 @@ services:
     container_name: web2-backend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "80:80"
     environment:
       NODE_ENV: development
-      PORT: 3000
+      PORT: 80
       MONGODB_URI: mongodb://admin:password123@mongodb:27017/studierendenbewerberportal?authSource=admin
       JWT_SECRET: your-super-secret-jwt-key-here
       JWT_EXPIRES_IN: 7d
-      CORS_ORIGIN: http://localhost:3000
+      CORS_ORIGIN: http://localhost:80
     volumes:
       - .:/app
       - /app/node_modules

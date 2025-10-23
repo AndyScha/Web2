@@ -2,6 +2,10 @@
 
 REST-Server für das Studierendenbewerberportal (Übung 1, Meilenstein 1, Web-Engineering II, BHT Berlin). Implementiert mit TypeScript, Express und MongoDB.
 
+## Meilenstein 1 - Public Users Endpoint
+
+Dieser Meilenstein implementiert den `/publicUsers` Endpoint für die Verwaltung von User-Daten ohne Authentifizierung.
+
 ## 🚀 Schnellstart mit Docker
 
 ### Voraussetzungen
@@ -33,7 +37,7 @@ docker-compose up -d
 
 4. **Services überprüfen:**
 
-- Backend API: http://localhost:3000
+- Backend API: http://localhost:80
 - MongoDB Express (Web UI): http://localhost:8081
 - MongoDB: localhost:27017
 
@@ -41,26 +45,31 @@ docker-compose up -d
 
 - `GET /` - API Info
 - `GET /health` - Health Check
-- `GET /api/students` - Alle Studenten abrufen
-- `GET /api/students/:id` - Einzelnen Student abrufen
-- `POST /api/students` - Neuen Student erstellen
-- `PUT /api/students/:id` - Student aktualisieren
-- `DELETE /api/students/:id` - Student löschen
+- `GET /publicUsers` - Alle User abrufen
+- `GET /publicUsers/:userID` - User per userID abrufen
+- `POST /publicUsers` - Neuen User erstellen
+- `PUT /publicUsers/:userID` - User aktualisieren
+- `DELETE /publicUsers/:userID` - User löschen
 
 ### Beispiel API-Aufruf
 
 ```bash
-# Neuen Student erstellen
-curl -X POST http://localhost:3000/api/students \
+# Neuen User erstellen
+curl -X POST http://localhost:80/publicUsers \
   -H "Content-Type: application/json" \
   -d '{
+    "userID": "max.mustermann",
+    "password": "geheim123",
     "firstName": "Max",
     "lastName": "Mustermann",
-    "email": "max.mustermann@example.com",
-    "studentId": "123456",
-    "course": "Informatik",
-    "semester": 3
+    "isAdministrator": false
   }'
+
+# User per userID abrufen
+curl http://localhost:80/publicUsers/max.mustermann
+
+# Alle User abrufen
+curl http://localhost:80/publicUsers
 ```
 
 ## 🛠️ Lokale Entwicklung
@@ -106,16 +115,34 @@ src/
 ├── controllers/     # Controller für API-Endpoints
 ├── middleware/      # Express Middleware
 ├── models/          # Mongoose Models
+│   └── User.ts      # User Model mit bcryptjs Hashing
 ├── routes/          # API Routes
+│   └── publicUsers.ts # /publicUsers Endpoint
 ├── types/           # TypeScript Type Definitions
 └── index.ts         # Hauptanwendung
 ```
+
+## 📋 User Model
+
+Das User-Model enthält folgende Attribute (exakt wie in der Aufgabenstellung):
+
+- `userID` (string, required, unique) - Eindeutige User-ID
+- `password` (string, required) - Passwort (wird mit bcryptjs gehashed)
+- `firstName` (string, required) - Vorname
+- `lastName` (string, required) - Nachname
+- `isAdministrator` (boolean, default: false) - Administrator-Status
+
+**Wichtige Hinweise:**
+
+- Passwörter werden automatisch mit bcryptjs gehashed
+- Alle Attribute werden in API-Responses zurückgegeben (inkl. gehashtes Passwort)
+- Suche erfolgt über `userID`, nicht über MongoDB ObjectId
 
 ## 🔧 Konfiguration
 
 Die Anwendung verwendet folgende Umgebungsvariablen:
 
-- `PORT` - Server Port (Standard: 3000)
+- `PORT` - Server Port (Standard: 80)
 - `MONGODB_URI` - MongoDB Verbindungsstring
 - `JWT_SECRET` - Secret für JWT Tokens
 - `NODE_ENV` - Umgebung (development/production)
