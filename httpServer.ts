@@ -1,5 +1,6 @@
 import * as database from "./database/db";
 import { createServer } from "./app";
+import * as UserService from "./endpoints/user/UserService";
 
 const app = createServer();
 
@@ -10,6 +11,13 @@ database.initDB(function (err: Error | null, db?: any): void {
   }
   if (db) {
     console.log("Anbindung erfolgreich");
+
+    // Erstelle Standard-Administrator, falls dieser noch nicht existiert
+    UserService.createDefaultAdmin(function (err: Error | null): void {
+      if (err) {
+        console.log("Fehler beim Anlegen des Standard-Administrators:", err);
+      }
+    });
   } else {
     console.log("Anbindung von DB gescheitert");
   }

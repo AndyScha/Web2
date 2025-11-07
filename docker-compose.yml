@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   mongodb:
@@ -10,14 +10,15 @@ services:
     environment:
       MONGO_INITDB_DATABASE: TestDB
     volumes:
+      - mongodb_config:/data/configdb
       - mongodb_data:/data/db
     networks:
       - app-network
 
 volumes:
   mongodb_data:
+  mongodb_config:
 
 networks:
   app-network:
     driver: bridge
-
