@@ -1,0 +1,7 @@
+dist
+.webpack
+node_modules
+.DS_Store
+coverage
+junit.xml
+my-app

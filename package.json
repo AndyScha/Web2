@@ -1,0 +1,34 @@
+{
+  "name": "start",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/httpServer.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/httpServer.js",
+    "db:up": "docker-compose up -d mongodb",
+    "db:down": "docker-compose down",
+    "db:logs": "docker-compose logs -f mongodb",
+    "start:with-db": "docker-compose up -d mongodb && sleep 3 && npm start",
+    "start:dev": "npm run start:with-db"
+  },
+  "author": "Andreas Schaaf",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
+    "express": "^4.21.1",
+    "mongoose": "^6.13.6"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^24.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
