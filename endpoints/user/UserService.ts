@@ -31,7 +31,7 @@ export function createUser(
   query.exec(function (err: Error | null, user: IUser | null) {
     if (user) {
       return callback({
-        Error: "user with userID: " + requestbody.userID + " already exists",
+        Error: "Benutzer mit ID schon vorhanden",
       });
     } else {
       // User existiert noch nicht, also kann er angelegt werden

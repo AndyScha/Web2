@@ -84,7 +84,13 @@ router.post(
         result?: IUser | IUser[] | null
       ) {
         if (err) {
-          res.status(400).json(err);
+          // Konvertiere Error (groß) zu error (klein) für konsistente Fehlermeldungen
+          const errorMessage =
+            (err as any).Error ||
+            (err as any).error ||
+            (err as Error).message ||
+            "Unknown error";
+          res.status(400).json({ error: errorMessage });
           return;
         }
         if (result && !Array.isArray(result)) {
@@ -92,7 +98,7 @@ router.post(
           const sanitizedUser = UserService.sanitizeUser(result);
           res.status(201).json(sanitizedUser);
         } else {
-          res.status(400).json({ Error: "Error creating user" });
+          res.status(400).json({ error: "Error creating user" });
         }
       }
     );
@@ -135,7 +141,7 @@ router.put(
       }
       // isAdministrator darf nicht geändert werden
       if (req.body.isAdministrator !== undefined) {
-        res.status(403).json({
+        res.status(401).json({
           Error: "You are not allowed to change isAdministrator",
         });
         return;

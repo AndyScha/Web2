@@ -12,7 +12,7 @@ router.get("/", function (req: Request, res: Response): void {
 
   if (!authHeader || !authHeader.startsWith("Basic ")) {
     res.status(401).setHeader("WWW-Authenticate", "Basic");
-    res.json({ Error: "Authentication required" });
+    res.json({ Error: "Failed to create token: Authentication failed" });
     return;
   }
 
@@ -21,7 +21,7 @@ router.get("/", function (req: Request, res: Response): void {
 
   if (!base64Credentials) {
     res.status(401).setHeader("WWW-Authenticate", "Basic");
-    res.json({ Error: "Authentication required" });
+    res.json({ Error: "Failed to create token: Authentication failed" });
     return;
   }
 
@@ -34,7 +34,7 @@ router.get("/", function (req: Request, res: Response): void {
 
     if (!userID || !password) {
       res.status(401).setHeader("WWW-Authenticate", "Basic");
-      res.json({ Error: "Authentication failed" });
+      res.json({ Error: "Failed to create token: Authentication failed" });
       return;
     }
 
@@ -45,7 +45,7 @@ router.get("/", function (req: Request, res: Response): void {
       function (err: Error | { Error: string } | null, user?: IUser | null) {
         if (err || !user) {
           res.status(401).setHeader("WWW-Authenticate", "Basic");
-          res.json({ Error: "Authentication failed" });
+          res.json({ Error: "Failed to create token: Authentication failed" });
           return;
         }
 
@@ -54,12 +54,24 @@ router.get("/", function (req: Request, res: Response): void {
         const jwtToken = TokenService.createToken(user);
         // Setze Authorization Header in der Antwort mit Bearer Token
         res.setHeader("Authorization", `Bearer ${jwtToken}`);
-        res.status(200).json(user);
+        // Gib Antwort im erwarteten Format zurück
+        // Konvertiere _id zu id für konsistente Formatierung
+        const userObj = user.toObject ? user.toObject() : user;
+        const userId = userObj._id ? userObj._id.toString() : undefined;
+        res.status(200).json({
+          Success: "Token created successfully",
+          firstName: user.firstName,
+          lastName: user.lastName,
+          id: userId,
+          isAdministrator: user.isAdministrator,
+          userID: user.userID,
+          token: jwtToken,
+        });
       }
     );
   } catch (error) {
     res.status(401).setHeader("WWW-Authenticate", "Basic");
-    res.json({ Error: "Authentication failed" });
+    res.json({ Error: "Failed to create token: Authentication failed" });
     return;
   }
 });

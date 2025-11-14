@@ -35,13 +35,7 @@ export function authenticateToken(
 
   // Prüfe ob Token vorhanden ist
   if (!token) {
-    // Wenn ein Authorization-Header vorhanden ist, aber kein Token extrahiert werden konnte,
-    // könnte es ein Basic Auth Token sein, der nicht als JWT verwendet werden kann
-    if (authHeader && authHeader.startsWith("Basic ")) {
-      res.status(401).json({ Error: "Invalid token format. Please authenticate again to get a Bearer token." });
-    } else {
-      res.status(401).json({ Error: "Authentication required" });
-    }
+    res.status(401).json({ error: "Token fehlt oder ist ungültig" });
     return;
   }
 
@@ -50,7 +44,7 @@ export function authenticateToken(
 
   // Prüfe ob Token gültig ist und userID enthält
   if (!payload || !payload.userID) {
-    res.status(401).json({ Error: "Invalid token" });
+    res.status(401).json({ error: "Token fehlt oder ist ungültig" });
     return;
   }
 
@@ -63,7 +57,7 @@ export function authenticateToken(
     ) {
       // Prüfe ob User gefunden wurde
       if (err || !user || Array.isArray(user)) {
-        res.status(401).json({ Error: "User not found" });
+        res.status(401).json({ error: "Token fehlt oder ist ungültig" });
         return;
       }
 
@@ -92,8 +86,8 @@ export function requireAdmin(
 ): void {
   // Prüfe ob User existiert und Administrator-Rechte hat
   if (!req.user || !req.user.isAdministrator) {
-    // 403 Forbidden: Authentifiziert, aber keine Berechtigung
-    res.status(403).json({ Error: "Administrator privileges required" });
+    // 401 Unauthorized: Authentifiziert, aber keine Berechtigung (laut Aufgabenstellung)
+    res.status(401).json({ Error: "Unauthorized" });
     return;
   }
   next();

@@ -8,9 +8,11 @@ const router = express.Router();
 router.get('/', function (_req: Request, res: Response): void {
     UserService.getUsers(function (_err: Error | { Error: string } | null, result?: IUser | IUser[] | null) {
         if (result && Array.isArray(result)) {
-            res.status(200).send(result);
+            // Entferne Passwort und Systemdaten aus allen Usern
+            const sanitizedUsers = UserService.sanitizeUsers(result);
+            res.status(200).json(sanitizedUsers);
         } else {
-            res.status(200).send([]);
+            res.status(200).json([]);
         }
     });
 });
@@ -19,7 +21,9 @@ router.get('/', function (_req: Request, res: Response): void {
 router.get('/:userID', function (req: Request, res: Response): void {
     UserService.findUserBy(req.params.userID, function (err: Error | { Error: string } | null, result?: IUser | IUser[] | null) {
         if (result && !Array.isArray(result)) {
-            res.status(200).send(result);
+            // Entferne Passwort und Systemdaten
+            const sanitizedUser = UserService.sanitizeUser(result);
+            res.status(200).json(sanitizedUser);
         } else {
             res.status(400).json(err || { Error: "User not found" });
         }
@@ -30,7 +34,9 @@ router.get('/:userID', function (req: Request, res: Response): void {
 router.post('/', function (req: Request, res: Response): void {
     UserService.createUser(req.body, function (err: Error | { Error: string } | null, result?: IUser | IUser[] | null) {
         if (result && !Array.isArray(result)) {
-            res.status(201).send(result);
+            // Entferne Passwort und Systemdaten
+            const sanitizedUser = UserService.sanitizeUser(result);
+            res.status(201).json(sanitizedUser);
         } else {
             res.status(400).json(err);
         }
@@ -52,7 +58,9 @@ router.delete("/:userID", function (req: Request, res: Response): void {
 router.put("/:userID", function (req: Request, res: Response): void {
     UserService.updateUser({ userID: req.params.userID }, req.body, function (err: Error | { Error: string } | null, result?: IUser | IUser[] | null) {
         if (result && !Array.isArray(result)) {
-            res.status(200).send(result);
+            // Entferne Passwort und Systemdaten
+            const sanitizedUser = UserService.sanitizeUser(result);
+            res.status(200).json(sanitizedUser);
         } else {
             res.status(400).json(err);
         }

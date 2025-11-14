@@ -172,8 +172,8 @@ export function sanitizeDegreeCourse(degreeCourse: IDegreeCourse): any {
     departmentName: courseObj.departmentName,
     departmentShortName: courseObj.departmentShortName,
     name: courseObj.name,
-    shortName: courseObj.shortName,
     id: courseObj._id ? courseObj._id.toString() : undefined,
+    shortName: courseObj.shortName,
   };
   return sanitized;
 }

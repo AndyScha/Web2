@@ -18,6 +18,7 @@ export function createServer(): express.Application {
       "Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept, Authorization"
     );
+    res.header("Access-Control-Expose-Headers", "Authorization");
     next();
   });
 
