@@ -2,27 +2,27 @@
 // Der Endpoint gibt einen JWT-Token (Bearer Token) im Authorization-Header zurück
 ###
 # @name loginAdminCorrect
-GET http://localhost/api/authenticate
+GET https://localhost/api/authenticate
 Authorization: Basic YWRtaW46MTIz
 
 // Login mit Basic Authentication als admin mit falschen Credentials
 // Hinweis: Der REST-Client überführt das Passwort automatisch nach Base64
 ###
-GET http://localhost/api/authenticate
+GET https://localhost/api/authenticate
 Authorization: Basic admin:asdf
 
 // Speichere den Bearer Token aus dem Response-Header
 @adminToken = {{loginAdminCorrect.response.headers.Authorization}}
 
 ### Auflisten aller Nutzer, ohne dass ein Token übergeben wird --> Anfrage scheitert mit 401 
-GET http://localhost/api/users
+GET https://localhost/api/users
 
 ### Auflisten aller Nutzer mit Token von admin
-GET http://localhost/api/users
+GET https://localhost/api/users
 Authorization: {{adminToken}}
 
 ### Lege neuen user manfred an
-POST http://localhost/api/users
+POST https://localhost/api/users
 Authorization: {{adminToken}}
 Content-Type: application/json
 
@@ -34,12 +34,12 @@ Content-Type: application/json
 }
 
 ### Abrufen des angelegten Users mit dem Admin-Token
-GET http://localhost/api/users/manfred
+GET https://localhost/api/users/manfred
 Authorization: {{adminToken}}
 
 // Ändere beim zweiten User den User-Name. Zur Selektion des Users verwende die userID.
 ###
-PUT http://localhost/api/users/manfred
+PUT https://localhost/api/users/manfred
 Content-Type: application/json
 Authorization: {{adminToken}}
 
@@ -52,24 +52,24 @@ Authorization: {{adminToken}}
 // Der Endpoint gibt einen JWT-Token (Bearer Token) im Authorization-Header zurück
 ###
 # @name loginManfredCorrect
-GET http://localhost/api/authenticate
+GET https://localhost/api/authenticate
 Authorization: Basic manfred:asdf
 
 // Speichere den Bearer Token aus dem Response-Header
 @manfredToken = {{loginManfredCorrect.response.headers.Authorization}}
 
 ### Auflisten aller Nutzer mit Token von manfred, das sollte nicht möglich sein
-GET http://localhost/api/users
+GET https://localhost/api/users
 Authorization: {{manfredToken}}
 
 ### Auflisten aller Studiengänge
-GET http://localhost/api/degreeCourses
+GET https://localhost/api/degreeCourses
 Authorization: {{adminToken}}
 
 // Lege einen Studiengang an
 ###
 # @name createDegreeCourseRequest
-POST http://127.0.0.1/api/degreeCourses
+POST https://localhost/api/degreeCourses
 Authorization: {{adminToken}}
 Content-Type: application/json
 
@@ -86,16 +86,16 @@ Content-Type: application/json
 @degreeCourseID = {{createDegreeCourseRequest.response.body.id}}
 
 ### Auflisten aller Studiengänge, es sollte jetzt einen geben
-GET http://localhost/api/degreeCourses
+GET https://localhost/api/degreeCourses
 Authorization: {{adminToken}}
 
 ### Abrufen von dem angelegten Studiengang
-GET http://localhost/api/degreeCourses/{{degreeCourseID}}
+GET https://localhost/api/degreeCourses/{{degreeCourseID}}
 Authorization: {{adminToken}}
 
 
 ### Ändere den Namen des Studiengangs
-PUT http://localhost/api/degreeCourses/{{degreeCourseID}}
+PUT https://localhost/api/degreeCourses/{{degreeCourseID}}
 Authorization: {{adminToken}}
 Content-Type: application/json
 
@@ -104,13 +104,13 @@ Content-Type: application/json
 }
 
 ### Auflisten der Studiengänge einer bestimmten Hochschule
-GET http://localhost/api/degreeCourses?universityShortName=Beuth HS
+GET https://localhost/api/degreeCourses?universityShortName=Beuth HS
 Authorization: {{adminToken}}
 
 ### Lösche den angelegten Studiengang
-DELETE http://localhost/api/degreeCourses/{{degreeCourseID}}
+DELETE https://localhost/api/degreeCourses/{{degreeCourseID}}
 Authorization: {{adminToken}}
 
 ### Lösche den User manfred
-DELETE http://localhost/api/users/manfred
+DELETE https://localhost/api/users/manfred
 Authorization: {{adminToken}}

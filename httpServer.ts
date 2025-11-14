@@ -1,6 +1,9 @@
 import * as database from "./database/db";
 import { createServer } from "./app";
 import * as UserService from "./endpoints/user/UserService";
+import https from "https";
+import fs from "fs";
+import path from "path";
 
 const app = createServer();
 
@@ -23,8 +26,14 @@ database.initDB(function (err: Error | null, db?: any): void {
   }
 });
 
-// Server auf Port 80 starten
-const port = 80;
-app.listen(port, () => {
-  console.log(`Server listening on port http://localhost:${port}`);
+// SSL-Zertifikat laden
+const options = {
+  key: fs.readFileSync(path.join(__dirname, "../certs/key.pem")),
+  cert: fs.readFileSync(path.join(__dirname, "../certs/cert.pem")),
+};
+
+// Server auf Port 443 starten (HTTPS)
+const port = 443;
+https.createServer(options, app).listen(port, () => {
+  console.log(`Server listening on port https://localhost:${port}`);
 });
